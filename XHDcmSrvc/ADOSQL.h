@@ -1,3 +1,4 @@
+//ado²Ù×÷Êý¾Ý¿â
 #ifndef _ADOSQL_H_
 #define _ADOSQL_H_
 #include "stdafx.h"

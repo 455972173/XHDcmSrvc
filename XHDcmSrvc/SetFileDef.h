@@ -1,3 +1,4 @@
+//保存XHDcmGate.set相关配置信息
 #pragma once
 #ifndef _SETFILEDEF_H_
 #define _SETFILEDEF_H_

@@ -1,3 +1,4 @@
+//¶ÁÎï.iniÅäÖÃÎÄ¼ş
 #ifndef  _INI_H_
 #define  _INI_H_
 #include <string> 
