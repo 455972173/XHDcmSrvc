@@ -1,0 +1,8 @@
+﻿  XHDcmSrvc.cpp
+e:\code\xinhua\c++\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc\logger.h(23): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
+e:\code\xinhua\c++\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(25): warning C4476: "printf": 格式说明符中的类型字段字符“ ”未知
+e:\code\xinhua\c++\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(25): warning C4476: "printf": 格式说明符中的类型字段字符“\r”未知
+e:\code\xinhua\c++\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(25): warning C4474: printf: 格式字符串中传递的参数太多
+  e:\code\xinhua\c++\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(25): note: 占位符和其参数预计 1 可变参数，但提供的却是 4 参数
+  XHDcmSrvc.vcxproj -> E:\CODE\XinHua\C++\XHDcmSrvc\XHDcmSrvc\x64\Debug\XHDcmSrvc.exe
+  XHDcmSrvc.vcxproj -> E:\CODE\XinHua\C++\XHDcmSrvc\XHDcmSrvc\x64\Debug\XHDcmSrvc.pdb (Full PDB)

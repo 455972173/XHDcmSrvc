@@ -1,0 +1,4 @@
+﻿  SetFileDef.cpp
+e:\code\xinhua\c++\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc\setfiledef.cpp(12): warning C4715: “ConfigFile::ReadConfigFile”: 不是所有的控件路径都返回值
+  XHDcmSrvc.vcxproj -> E:\CODE\XinHua\C++\XHDcmSrvc\XHDcmSrvc\Debug\XHDcmSrvc.exe
+  XHDcmSrvc.vcxproj -> E:\CODE\XinHua\C++\XHDcmSrvc\XHDcmSrvc\Debug\XHDcmSrvc.pdb (Full PDB)
