@@ -1,15 +1,13 @@
 // XHDcmSrvc.cpp : 定义控制台应用程序的入口点。
 //
 #include "stdafx.h"
+#include <string>
+#include <time.h>
 #include "windows.h"
 #include "Logger.h"
 #include "Ini.h"
 #include "ADOSQL.h"
-#include <string>
-#include <time.h>
-#include "xhdcm_dll\dcmnet.h"
-#include "xhdcm_dll\dcmtype.h"
-#include "xhdcm_dll\xhdicom.h"
+#include "DCMObj.h"
 
 using namespace std;
 using namespace LOGGER;

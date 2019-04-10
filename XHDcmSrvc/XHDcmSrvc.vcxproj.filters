@@ -39,9 +39,6 @@
     <ClInclude Include="Ini.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DCMDef.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

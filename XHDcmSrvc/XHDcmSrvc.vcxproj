@@ -148,7 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ADOSQL.h" />
-    <ClInclude Include="DCMDef.h" />
     <ClInclude Include="DCMObj.h" />
     <ClInclude Include="Ini.h" />
     <ClInclude Include="Logger.h" />
