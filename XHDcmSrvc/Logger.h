@@ -29,10 +29,11 @@ namespace LOGGER
 		//nLogLevel：日志记录的等级，可空
 		//strLogPath：日志目录，可空
 		//strLogName：日志名称，可空
-		CLogger(EnumLogLevel nLogLevel = EnumLogLevel::LogLevel_Info, const std::string strLogPath = "", const std::string strLogName = "");
+		CLogger();
 		//析构函数
 		virtual ~CLogger();
 	public:
+		void Init(EnumLogLevel nLogLevel = EnumLogLevel::LogLevel_Info, const std::string strLogPath = "", const std::string strLogName = "");
 		//写严重错误信息
 		void TraceFatal(const char *lpcszFormat, ...);
 		//写错误信息

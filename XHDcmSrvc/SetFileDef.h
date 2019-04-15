@@ -6,13 +6,16 @@
 #include<iostream>
 #include<string>
 #include<fstream>
+#include "Ini.h"
+#include "Logger.h"
+using namespace std;
+using namespace LOGGER;
 #define SetupFileExtName '.set';
 #define SetupFileFlag  'XHDCMSET'; //根据程序情况加以修改(不超过10个字符)
-
 #define MinSetupFileVersion  1;
 #define MaxSetupFileVersion  1;
 #define MaxLineLength 1024;
-using namespace std;
+extern CLogger Logger;
 //TDBServerType 数据库服务器类型
 enum TDBServerType
 {
@@ -55,18 +58,19 @@ struct ConfigPara
 class ConfigFile
 {
 public:
-	ConfigFile(string ConfigFilePath);
-	~ConfigFile();
-	bool ReadConfigFile();
+	ConfigFile() {}
+	~ConfigFile() {}
+	bool ReadConfigFile(string ConfigFilePath);
+	string GetFileFlag()
+	{
+		return m_IniConfig.ReadString("ConfigHead", "FileFlag", "");
+	}
 
 private:
+	ConfigHead m_ConfigHead;
 	ConfigPara m_ConfigPara;
+	CIni m_IniConfig;
 	string m_ConfigFilePath;
-
 };
-ConfigFile::ConfigFile(string SetupFilePath)
-{
-	m_ConfigFilePath = SetupFilePath;
-}
 
 #endif // ! _SETFILEDEF_H_

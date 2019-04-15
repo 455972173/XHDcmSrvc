@@ -149,8 +149,10 @@
   <ItemGroup>
     <ClInclude Include="ADOSQL.h" />
     <ClInclude Include="DCMObj.h" />
+    <ClInclude Include="GetRegValue.h" />
     <ClInclude Include="Ini.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="PubFunc.h" />
     <ClInclude Include="SetFileDef.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -158,8 +160,10 @@
   <ItemGroup>
     <ClCompile Include="ADOSQL.cpp" />
     <ClCompile Include="DCMObj.cpp" />
+    <ClCompile Include="GetRegValue.cpp" />
     <ClCompile Include="Ini.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="PubFunc.cpp" />
     <ClCompile Include="SetFileDef.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

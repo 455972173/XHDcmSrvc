@@ -1,12 +1,3 @@
-﻿  DCMObj.cpp
-  正在生成代码...
-  正在编译...
-  XHDcmSrvc.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(23): warning C4476: "printf": 格式说明符中的类型字段字符“ ”未知
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(23): warning C4476: "printf": 格式说明符中的类型字段字符“\r”未知
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(23): warning C4474: printf: 格式字符串中传递的参数太多
-  e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(23): note: 占位符和其参数预计 1 可变参数，但提供的却是 4 参数
-  正在生成代码...
+﻿  ADOSQL.cpp
   XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.exe
   XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.pdb (Full PDB)

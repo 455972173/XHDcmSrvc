@@ -39,6 +39,12 @@
     <ClInclude Include="Ini.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PubFunc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GetRegValue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -60,6 +66,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Ini.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PubFunc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GetRegValue.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

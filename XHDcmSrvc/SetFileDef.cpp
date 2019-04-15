@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include"SetFileDef.h"
-bool ConfigFile::ReadConfigFile()
+
+bool ConfigFile::ReadConfigFile(string SetupFilePath)
 {
-	fstream CurFile;
-	CurFile.open(m_ConfigFilePath);
-	if (!CurFile)
+	m_ConfigFilePath = SetupFilePath;
+	if (!m_IniConfig.ReadConfig(m_ConfigFilePath))
 	{
-		cout << m_ConfigFilePath << "²»´æÔÚ" << endl;
 		return false;
 	}
+	return true;
 }

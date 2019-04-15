@@ -13,11 +13,27 @@ using std::vector;
 
 namespace LOGGER
 {
-	CLogger::CLogger(EnumLogLevel nLogLevel, const std::string strLogPath, const std::string strLogName)
-		:m_nLogLevel(nLogLevel),
-		m_strLogPath(strLogPath),
-		m_strLogName(strLogName)
+	CLogger::CLogger()
 	{
+	}
+
+	//析构函数
+	CLogger::~CLogger()
+	{
+		//释放临界区
+		DeleteCriticalSection(&m_cs);
+		//关闭文件流
+		if (m_pFileStream)
+		{
+			fclose(m_pFileStream);
+			m_pFileStream = NULL;
+		}
+	}
+	void CLogger::Init(EnumLogLevel nLogLevel, const std::string strLogPath, const std::string strLogName)
+	{
+		m_nLogLevel = nLogLevel;
+		m_strLogPath = strLogPath;
+		m_strLogName = strLogName;
 		//初始化
 		m_pFileStream = NULL;
 		if (m_strLogPath.empty())
@@ -48,21 +64,6 @@ namespace LOGGER
 
 		InitializeCriticalSection(&m_cs);
 	}
-
-
-	//析构函数
-	CLogger::~CLogger()
-	{
-		//释放临界区
-		DeleteCriticalSection(&m_cs);
-		//关闭文件流
-		if (m_pFileStream)
-		{
-			fclose(m_pFileStream);
-			m_pFileStream = NULL;
-		}
-	}
-
 	//文件全路径得到文件名
 	const char *CLogger::path_file(const char *path, char splitter)
 	{
