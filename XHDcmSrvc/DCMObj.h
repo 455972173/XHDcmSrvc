@@ -28,6 +28,8 @@ public:
 	TDcmObjManager(string ADcmFileName);
 	~TDcmObjManager();
 
+	bool IsDcmOpenSuccess();
+
 	TDcmInfoHeader* GetDcmInfoHeader();
 	TDcmImageInfo* GetDcmImageInfo();
 	TDcmRTPlanInfo* GetDcmRTPlanInfo();

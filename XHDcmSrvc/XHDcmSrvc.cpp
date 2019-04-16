@@ -10,6 +10,7 @@
 #include "DCMObj.h"
 #include "GetRegValue.h"
 #include "SetFileDef.h"
+#include "PubFunc.h"
 
 using namespace std;
 using namespace LOGGER;
@@ -18,43 +19,91 @@ CLogger Logger;
 CADOSQL Sql;
 STORESCPCALLBACK TmpScpFunc;
 ConfigFile ConfigInfo;
-//CIni IniConfig;
-//int main(int argc,char* argv[])
-//{
-//	IniConfig.ReadConfig("E:\\LS\\CTPic\\config.ini");
-//	string HostIp   = IniConfig.ReadString("TEST1", "ip", "");
-//	string HostPort = IniConfig.ReadString("TEST2", "port", "");
-//	string HostName = IniConfig.ReadString("TEST3", "name", "");
-//	printf("IP:%s\tPort:%s\tName:%s\r\n", HostIp.c_str(), HostPort.c_str(), HostName.c_str());
-//
-//	printf("XHDcmSrvc Start\r\n");
-//	string OutputDir = "E:\\LS\\CTPic\\ReceiveCTPic";
-//	TDCMAssocPara CurDCMAssocPara;
-//	CurDCMAssocPara.ServerName = "127.0.0.1";
-//	CurDCMAssocPara.ServerPort = 10101;
-//	CurDCMAssocPara.ServerTitle = "XHDICOM";
-//	CurDCMAssocPara.ClientTitle = "XHDICOM";
-//	CurDCMAssocPara.MaxPDULength = 16384;
-//	CurDCMAssocPara.TimeOut = 1;
-//
-//	TmpScpFunc = ManageDCM;
-//	bool IsRunSuccess =  XHDCM_StoreSCPRun(&CurDCMAssocPara, OutputDir.c_str(), TmpScpFunc);
-//	while (true)
-//	{
-//		Sleep(1);
-//	}
-//    return 0;
-//}
-
+//启动SCP服务的回调函数
 void  ManageDCM(TStoreProgress* progress, TDcmInfoHeader* DcmInfoHeader)
 {
 	return;
 }
-DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)//解析处理接收到的DCM文件线程
+//解析处理接收到的DCM文件线程
+DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 {
+	string DstFolderPath = ConfigInfo.GetDcmOutputPath();
+	vector<string> DstFileVec;
+	while (true)
+	{
+		DstFileVec.clear();
+		if (!getDstFiles(DstFolderPath, "\\*.dcm", DstFileVec,true))
+		{
+			Sleep(200);//如果没有新的dcm文件，没200毫秒扫描一次
+			continue;
+		}
+		for (vector<string>::iterator TmpItr = DstFileVec.begin();TmpItr != DstFileVec.end();TmpItr++)
+		{
+			string CurDcmFileName = *TmpItr;
+			string CurDcmFilePath = DstFolderPath + "\\" + CurDcmFileName;
+			TDcmObjManager DcmObjMngr(CurDcmFilePath);
+			if (!DcmObjMngr.IsDcmOpenSuccess())//如果Dcm文件打开失败，删除当前文件后，开始解析下一个文件
+			{
+				Logger.TraceError("Dcm文件打开失败:%s", CurDcmFilePath.c_str());
+				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
+				continue;
+			}
+			//获取头信息
+			TDcmInfoHeader* DcmInfoHeader = DcmObjMngr.GetDcmInfoHeader();
+			if (DcmInfoHeader == NULL)
+			{
+				Logger.TraceError("Dcm文件头为空:%s", CurDcmFilePath.c_str());
+				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
+				continue;
+			}
+			if (DcmInfoHeader->SOPInstanceUID == NULL)
+			{
+				Logger.TraceError("Dcm文件SOPUid为空:%s", CurDcmFilePath.c_str());
+				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
+				continue;
+			}
+			string SOPInstanceUID = DcmInfoHeader->SOPInstanceUID;
+			string PatientID;
+			string PatientName;
+			if (DcmInfoHeader->PatientID == NULL)
+			{
+				PatientID = "_";
+			}
+			else
+			{
+				PatientID = DcmInfoHeader->PatientID;
+			}
+			if (DcmInfoHeader->PatientName == NULL)
+			{
+				PatientName = "_";
+			}
+			else
+			{
+				PatientName = DcmInfoHeader->PatientName;
+			}
+			int DotPos = CurDcmFileName.find('.');
+			string FileLeadStr = CurDcmFileName.substr(0, DotPos);
+			string PatFolderName;
+			string DcmOutputPath;
+			if ((FileLeadStr == "CT") && (ConfigInfo.GetIsSepDcmMLOutputPath()))
+			{
+				DcmOutputPath = ConfigInfo.GetDcmMLOutputPath();
+			}
+			else
+			{
+				DcmOutputPath = ConfigInfo.GetDcmOutputPath();
+				PatFolderName = DcmOutputPath + "\\" + CanvertToValidFileName(PatientID + ' ' + PatientName);
+			}
+			if (!IsFileExists(PatFolderName))
+			{
+				CreateDirectory((LPCTSTR)PatFolderName.c_str(),NULL);
+			}
+		}
+	}
 	return 1;
 }
-bool StartInit(string DcmFolderPath)//日志、数据库等初始化
+//日志、数据库等初始化
+bool StartInit(string DcmFolderPath)
 {
 	//初始化日志存放路径
 	Logger.Init(LogLevel_Info, DcmFolderPath + "\\log\\");
@@ -81,16 +130,17 @@ bool StartInit(string DcmFolderPath)//日志、数据库等初始化
 		Logger.TraceInfo("数据库服务器连接成功");
 	}
 	TDCMAssocPara CurDCMAssocPara;
-	CurDCMAssocPara.ServerName = "127.0.0.1";
-	CurDCMAssocPara.ServerPort = 10101;
+	CurDCMAssocPara.ServerName = ConfigInfo.GetServerIp().c_str();
+	CurDCMAssocPara.ServerPort = atoi(ConfigInfo.GetServerPort().c_str());
 	CurDCMAssocPara.ServerTitle = "XHDICOM";
 	CurDCMAssocPara.ClientTitle = "XHDICOM";
-	CurDCMAssocPara.MaxPDULength = 16384;
+	CurDCMAssocPara.MaxPDULength = atoi(ConfigInfo.GetMaxPdu().c_str());;
 	CurDCMAssocPara.TimeOut = 1;
 	TmpScpFunc = ManageDCM;
-	bool IsRunSuccess =  XHDCM_StoreSCPRun(&CurDCMAssocPara, OutputDir.c_str(), TmpScpFunc);
-	return true;
+	bool IsRunSuccess =  XHDCM_StoreSCPRun(&CurDCMAssocPara, ConfigInfo.GetDcmOutputPath().c_str(), TmpScpFunc);
+	return IsRunSuccess;
 }
+
 int main(int argc, char* argv[])
 {
 	//读取注册表获取相关配置文件存放路径
@@ -99,10 +149,8 @@ int main(int argc, char* argv[])
 	{
 		exit(0);
 	}
-
 	//启动DCM接收服务
 	HANDLE thread = CreateThread(NULL, 0, AnalyseDcmFileThread, NULL, 0, NULL);
-
 	while (true)
 	{
 		Sleep(500);

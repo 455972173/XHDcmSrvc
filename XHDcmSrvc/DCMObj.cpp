@@ -9,6 +9,14 @@ TDcmObjManager::~TDcmObjManager()
 {
 	XHDCM_DeleteDcmObject(FDcmObject);
 }
+bool TDcmObjManager::IsDcmOpenSuccess()
+{
+	if (FDcmObject == NULL)
+	{
+		return false;
+	}
+	return true;
+}
 TDcmInfoHeader* TDcmObjManager::GetDcmInfoHeader()
 {
 	return XHDCM_GetDcmInfoHeader(FDcmObject);

@@ -65,6 +65,37 @@ public:
 	{
 		return m_IniConfig.ReadString("ConfigHead", "FileFlag", "");
 	}
+	string GetDcmOutputPath()
+	{
+		return m_IniConfig.ReadString("ConfigInfo","DICOMFilePath","");
+	}
+	string GetServerIp()
+	{
+		return m_IniConfig.ReadString("ConfigInfo", "ServerIp", "127.0.0.1");
+	}
+	string GetServerPort()
+	{
+		return m_IniConfig.ReadString("ConfigInfo", "ServerPort", "");
+	}
+	string GetMaxPdu()
+	{
+		return m_IniConfig.ReadString("ConfigInfo", "MaxPdu", "");
+	}
+	bool GetIsSepDcmMLOutputPath()
+	{
+		if (_stricmp(m_IniConfig.ReadString("ConfigInfo", "IsUseSingleDICOMFolder", "").c_str(), "true"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	string GetDcmMLOutputPath()
+	{
+		return m_IniConfig.ReadString("ConfigInfo", "PicFilePath", "");
+	}
 
 private:
 	ConfigHead m_ConfigHead;

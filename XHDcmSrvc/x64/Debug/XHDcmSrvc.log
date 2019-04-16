@@ -1,3 +1,5 @@
-﻿  ADOSQL.cpp
+﻿  XHDcmSrvc.cpp
+e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
+e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(84): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
   XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.exe
   XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.pdb (Full PDB)
