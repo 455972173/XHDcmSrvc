@@ -45,6 +45,12 @@
     <ClInclude Include="GetRegValue.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="OptFileDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDM.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -72,6 +78,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GetRegValue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OptFileDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MainDM.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

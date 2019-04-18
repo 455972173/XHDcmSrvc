@@ -1,3 +1,4 @@
+//获取注册表信息
 #ifndef __GETREGVALUE_H__
 #define __GETREGVALUE_H__
 

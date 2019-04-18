@@ -1,5 +1,9 @@
 ﻿  XHDcmSrvc.cpp
 e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
 e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(84): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-  XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.exe
-  XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.pdb (Full PDB)
+e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(97): error C3867: “std::basic_string<char,std::char_traits<char>,std::allocator<char>>::length”: 非标准语法；请使用 "&" 来创建指向成员的指针
+e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(97): error C2296: “>”: 非法，左操作数包含“unsigned __int64 (__cdecl std::basic_string<char,std::char_traits<char>,std::allocator<char>>::* )(void) noexcept const”类型
+e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(97): error C2297: “>”: 非法，右操作数包含“unsigned __int64 (__cdecl std::basic_string<char,std::char_traits<char>,std::allocator<char>>::* )(void) noexcept const”类型
+  OptFileDef.cpp
+e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
+  正在生成代码...

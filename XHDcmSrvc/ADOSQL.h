@@ -11,10 +11,10 @@ namespace ADO
 	class CADOSQL
 	{
 	public:
-		CADOSQL(void);
+		CADOSQL();
 		~CADOSQL(void);
 
-		bool Connect(void);
+		bool Connect(string ServerIp, string User, string Pwd, string DataBase);
 		bool Close(void);
 		bool IsOpen(void);
 		long GetRecordCount(_RecordsetPtr set);
@@ -33,6 +33,7 @@ namespace ADO
 		bool m_bTransaction;//是否开始事务
 
 	private:
+		CADOSQL(void);
 		void dump_com_error(_com_error &e);	//出错处理
 	};
 }

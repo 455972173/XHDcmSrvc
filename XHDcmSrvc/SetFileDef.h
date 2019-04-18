@@ -96,6 +96,10 @@ public:
 	{
 		return m_IniConfig.ReadString("ConfigInfo", "PicFilePath", "");
 	}
+	string GetEquipSeriesNo()
+	{
+		return m_IniConfig.ReadString("ConfigInfo", "DeviceSN", "");
+	}
 
 private:
 	ConfigHead m_ConfigHead;

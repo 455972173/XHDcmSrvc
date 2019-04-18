@@ -11,14 +11,16 @@
 #include "GetRegValue.h"
 #include "SetFileDef.h"
 #include "PubFunc.h"
+#include "OptFileDef.h"
 
 using namespace std;
 using namespace LOGGER;
 using namespace ADO;
 CLogger Logger;
-CADOSQL Sql;
+CADOSQL Sql;////////////////////////////////////////////////////////////////////////////////
 STORESCPCALLBACK TmpScpFunc;
 ConfigFile ConfigInfo;
+OptConfigFile OptInfo;
 //启动SCP服务的回调函数
 void  ManageDCM(TStoreProgress* progress, TDcmInfoHeader* DcmInfoHeader)
 {
@@ -94,15 +96,20 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 				DcmOutputPath = ConfigInfo.GetDcmOutputPath();
 				PatFolderName = DcmOutputPath + "\\" + CanvertToValidFileName(PatientID + ' ' + PatientName);
 			}
-			if (!IsFileExists(PatFolderName))
+			if (!IsFileExists(PatFolderName) && (DcmOutputPath.length > 0))
 			{
 				CreateDirectory((LPCTSTR)PatFolderName.c_str(),NULL);
+			}
+			PatientID = DcmInfoHeader->PatientID;
+			if (FileLeadStr != "CT")
+			{
+
 			}
 		}
 	}
 	return 1;
 }
-//日志、数据库等初始化
+//日志、数据库初始化 开启Dcm接收服务
 bool StartInit(string DcmFolderPath)
 {
 	//初始化日志存放路径
@@ -110,25 +117,21 @@ bool StartInit(string DcmFolderPath)
 	Logger.TraceInfo("-------------XHDcmSrvc程序启动-------------");
 	Logger.TraceInfo("当前注册表中的相关配置文件存放路径为 :%s", DcmFolderPath.c_str());
 
-	//初始化配置文件存放路径，读取配置文件
+	//初始化.set文件存放路径，读取.set配置文件
 	string ConfigFilePath = DcmFolderPath + "\\XHDcmGate.set";
 	if (!ConfigInfo.ReadConfigFile(ConfigFilePath))
 	{
 		Logger.TraceError("%s打开失败", ConfigFilePath.c_str());
 		return false;
 	}
-
-	//连接数据库
-	Sql.Connect();
-	if (!Sql.IsOpen())
+	//初始化.opt文件存放路径，读取.opt配置文件
+	string OptFilePath = DcmFolderPath + "\\" + ConfigInfo.GetEquipSeriesNo() + ".opt";
+	if (!OptInfo.ReadConfigFile(OptFilePath))
 	{
-		Logger.TraceError("数据库服务器连接失败，程序退出");
+		Logger.TraceError("%s打开失败", OptFilePath.c_str());
 		return false;
 	}
-	else
-	{
-		Logger.TraceInfo("数据库服务器连接成功");
-	}
+
 	TDCMAssocPara CurDCMAssocPara;
 	CurDCMAssocPara.ServerName = ConfigInfo.GetServerIp().c_str();
 	CurDCMAssocPara.ServerPort = atoi(ConfigInfo.GetServerPort().c_str());
@@ -145,11 +148,12 @@ int main(int argc, char* argv[])
 {
 	//读取注册表获取相关配置文件存放路径
 	string DcmFolderPath = GetRegValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\SHINVA\\XHDICOM", "DcmFolderName");
+	//配置文件、日志文件初始化，连接数据库，开始Dcm接收服务
 	if (!StartInit(DcmFolderPath))
 	{
 		exit(0);
 	}
-	//启动DCM接收服务
+	//启动DCM文件处理线程
 	HANDLE thread = CreateThread(NULL, 0, AnalyseDcmFileThread, NULL, 0, NULL);
 	while (true)
 	{

@@ -6,7 +6,7 @@
 using namespace std;
 namespace ADO
 {
-	CADOSQL::CADOSQL(void)
+	CADOSQL::CADOSQL()
 	{
 		CoInitialize(NULL);;//初始化OLE/COM库环境，为访问ADO接口做准备
 		m_bTransactionError = false;
@@ -15,11 +15,6 @@ namespace ADO
 
 		m_pConn.CreateInstance(__uuidof(Connection));//创建Connection对象
 		m_pRecordset.CreateInstance(__uuidof(Recordset));//创建记录集
-
-		m_strServer = "(local)";//127.0.0.1,1433
-		m_strUser = "sa";
-		m_strPsw = "123456";
-		m_strDatabase = "PracticeTest";
 	}
 
 	CADOSQL::~CADOSQL(void)
@@ -33,13 +28,16 @@ namespace ADO
 	{
 		if (m_pConn == NULL || !IsOpen())
 			return false;
-
 		m_pConn->Close();
-
 		return true;
 	}
-	bool CADOSQL::Connect(void)
+	bool CADOSQL::Connect(string ServerIp, string User, string Pwd, string DataBase)
 	{
+		m_strServer = ServerIp;//127.0.0.1,1433
+		m_strUser = User;
+		m_strPsw = Pwd;
+		m_strDatabase = DataBase;
+
 		string conData = "Provider=SQLOLEDB;Server=";//Provider=SQLOLEDB 数据库采用SQL的方式连接
 		conData += m_strServer;//数据库服务器的地址
 		conData += ";uid=";

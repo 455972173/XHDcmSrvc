@@ -88,6 +88,28 @@ bool IsFileExists(string Path)
 		return false;
 	}
 }
+void Trim(string &s)
+{
+
+	if (!s.empty())
+	{
+		s.erase(0, s.find_first_not_of(" "));
+		s.erase(s.find_last_not_of(" ") + 1);
+	}
+
+}
+string GetCurTmStr()
+{
+	time_t t = time(0);
+	char TmBuff[64];
+	strftime(TmBuff, sizeof(TmBuff), "%Y-%m-%d %H:%M:%S", localtime(&t)); //年-月-日 时-分-秒
+	return TmBuff;
+}
+int CompareNoCase(string str1, string str2)
+{
+	return stricmp(str1.c_str(), str2.c_str());
+}
+
 
 
 
