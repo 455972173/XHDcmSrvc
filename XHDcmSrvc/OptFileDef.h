@@ -20,8 +20,8 @@ struct OptPara
 class OptConfigFile
 {
 public:
-	OptConfigFile();
-	~OptConfigFile();
+	OptConfigFile() {}
+	~OptConfigFile() {}
 	bool ReadConfigFile(string ConfigFilePath);
 	string GetSerialNoStr()
 	{

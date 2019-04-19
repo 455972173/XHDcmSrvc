@@ -92,6 +92,17 @@ public:
 			return false;
 		}
 	}
+	bool GetIsOverridePreDCMFile()
+	{
+		if (_stricmp(m_IniConfig.ReadString("ConfigInfo", "IsOverridePreDICOMFile", "").c_str(), "true"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 	string GetDcmMLOutputPath()
 	{
 		return m_IniConfig.ReadString("ConfigInfo", "PicFilePath", "");

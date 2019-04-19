@@ -12,7 +12,7 @@ namespace ADO
 	{
 	public:
 		CADOSQL();
-		~CADOSQL(void);
+		~CADOSQL();
 
 		bool Connect(string ServerIp, string User, string Pwd, string DataBase);
 		bool Close(void);
@@ -33,7 +33,6 @@ namespace ADO
 		bool m_bTransaction;//是否开始事务
 
 	private:
-		CADOSQL(void);
 		void dump_com_error(_com_error &e);	//出错处理
 	};
 }

@@ -12,15 +12,16 @@
 #include "SetFileDef.h"
 #include "PubFunc.h"
 #include "OptFileDef.h"
+#include "MainDM.h"
 
 using namespace std;
 using namespace LOGGER;
 using namespace ADO;
 CLogger Logger;
-CADOSQL Sql;////////////////////////////////////////////////////////////////////////////////
 STORESCPCALLBACK TmpScpFunc;
 ConfigFile ConfigInfo;
 OptConfigFile OptInfo;
+MainDataModify MainDatMod;
 //启动SCP服务的回调函数
 void  ManageDCM(TStoreProgress* progress, TDcmInfoHeader* DcmInfoHeader)
 {
@@ -36,7 +37,7 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 		DstFileVec.clear();
 		if (!getDstFiles(DstFolderPath, "\\*.dcm", DstFileVec,true))
 		{
-			Sleep(200);//如果没有新的dcm文件，没200毫秒扫描一次
+			Sleep(200);//如果没有新的dcm文件，每200毫秒扫描一次
 			continue;
 		}
 		for (vector<string>::iterator TmpItr = DstFileVec.begin();TmpItr != DstFileVec.end();TmpItr++)
@@ -46,6 +47,7 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 			TDcmObjManager DcmObjMngr(CurDcmFilePath);
 			if (!DcmObjMngr.IsDcmOpenSuccess())//如果Dcm文件打开失败，删除当前文件后，开始解析下一个文件
 			{
+				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(),FILE_ATTRIBUTE_READONLY);
 				Logger.TraceError("Dcm文件打开失败:%s", CurDcmFilePath.c_str());
 				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
 				continue;
@@ -54,12 +56,14 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 			TDcmInfoHeader* DcmInfoHeader = DcmObjMngr.GetDcmInfoHeader();
 			if (DcmInfoHeader == NULL)
 			{
+				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_READONLY);
 				Logger.TraceError("Dcm文件头为空:%s", CurDcmFilePath.c_str());
 				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
 				continue;
 			}
 			if (DcmInfoHeader->SOPInstanceUID == NULL)
 			{
+				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_READONLY);
 				Logger.TraceError("Dcm文件SOPUid为空:%s", CurDcmFilePath.c_str());
 				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
 				continue;
@@ -96,14 +100,80 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 				DcmOutputPath = ConfigInfo.GetDcmOutputPath();
 				PatFolderName = DcmOutputPath + "\\" + CanvertToValidFileName(PatientID + ' ' + PatientName);
 			}
-			if (!IsFileExists(PatFolderName) && (DcmOutputPath.length > 0))
+			if (!IsFileExists(PatFolderName) && (DcmOutputPath.length()> 0))
 			{
 				CreateDirectory((LPCTSTR)PatFolderName.c_str(),NULL);
 			}
 			PatientID = DcmInfoHeader->PatientID;
+			string SOPFileName;
+			string FullSOPFileName;
 			if (FileLeadStr != "CT")
 			{
-
+				if (MainDatMod.DcmSOPFound(PatientID, SOPInstanceUID, SOPFileName))
+				{
+					FullSOPFileName = PatFolderName + "\\" + SOPFileName;
+					if (IsFileExists(FullSOPFileName))
+					{
+						if (!ConfigInfo.GetIsOverridePreDCMFile())
+						{
+							DeleteFile((LPCWSTR)CurDcmFilePath.c_str());
+							Logger.TraceInfo("File Already Exist 1,Delete :%s", CurDcmFileName.c_str());
+							continue;
+						}
+						DeleteFile((LPCWSTR)FullSOPFileName.c_str());
+					}
+				}
+			}
+			if (OptInfo.GetIsSOPInstUIDFileName())
+			{
+				FullSOPFileName = PatFolderName + "\\" + FileLeadStr + SOPInstanceUID + ".dcm";
+			}
+			else
+			{
+				FullSOPFileName = PatFolderName + "\\" + CurDcmFileName;
+			}
+			if (FileLeadStr != "CT")
+			{
+				try
+				{
+					if (!MainDatMod.SaveDicomInfo(*DcmInfoHeader, ExtractFileName(FullSOPFileName)))
+					{
+						Logger.TraceInfo("File Name :%s,PatientId :%s,PatientName :%s", CurDcmFileName.c_str(), PatientID.c_str(), PatientName.c_str());
+						Logger.TraceInfo("%s : rejected by db for conflicted PatientID", CurDcmFileName.c_str());
+					}
+				}
+				catch(exception& e)
+				{
+					Logger.TraceInfo("File Name :%s,PatientId :%s,PatientName :%s", CurDcmFileName.c_str(), PatientID.c_str(), PatientName.c_str());
+					Logger.TraceInfo("%s :write to db error :%s", CurDcmFileName.c_str());
+				}
+			}
+			else
+			{
+				if (OptInfo.GetIsSOPInstUIDFileName())
+				{
+					if (IsFileExists(FullSOPFileName))
+					{
+						if (!ConfigInfo.GetIsOverridePreDCMFile())
+						{
+							DeleteFile((LPCWSTR)CurDcmFilePath.c_str());
+							Logger.TraceInfo("File Already Exist 2,Delete :%s", CurDcmFileName.c_str());
+							continue;
+						}
+						DeleteFile((LPCWSTR)FullSOPFileName.c_str());
+					}
+				}
+			}
+			CopyFile((LPCWSTR)CurDcmFilePath.c_str(), (LPCWSTR)FullSOPFileName.c_str(), false);
+			if (IsFileExists(FullSOPFileName))
+			{
+				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
+				Logger.TraceInfo("FullSOPFileName Exist :%s", FullSOPFileName.c_str());
+			}
+			else
+			{
+				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_READONLY);
+				Logger.TraceInfo("FullSOPFileName File Copy Error :%s", FullSOPFileName.c_str());
 			}
 		}
 	}
@@ -116,7 +186,16 @@ bool StartInit(string DcmFolderPath)
 	Logger.Init(LogLevel_Info, DcmFolderPath + "\\log\\");
 	Logger.TraceInfo("-------------XHDcmSrvc程序启动-------------");
 	Logger.TraceInfo("当前注册表中的相关配置文件存放路径为 :%s", DcmFolderPath.c_str());
-
+	//连接数据库
+	if (!MainDatMod.ConnectDataBase("127.0.0.1", "sa", "123456", "PracticeTest"))
+	{
+		Logger.TraceError("数据库服务器连接失败，程序退出");
+		return false;
+	}
+	else
+	{
+		Logger.TraceInfo("数据库服务器连接成功");
+	}
 	//初始化.set文件存放路径，读取.set配置文件
 	string ConfigFilePath = DcmFolderPath + "\\XHDcmGate.set";
 	if (!ConfigInfo.ReadConfigFile(ConfigFilePath))
@@ -132,6 +211,7 @@ bool StartInit(string DcmFolderPath)
 		return false;
 	}
 
+	//启动DcmServer监听接收文件服务
 	TDCMAssocPara CurDCMAssocPara;
 	CurDCMAssocPara.ServerName = ConfigInfo.GetServerIp().c_str();
 	CurDCMAssocPara.ServerPort = atoi(ConfigInfo.GetServerPort().c_str());

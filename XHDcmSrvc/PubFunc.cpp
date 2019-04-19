@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-
 //找到目的目录下的指定文件，只在mode为*.*的时候支持递归查找所有文件
 //IsOnlyName为true的时候得到的vector里面放的都是文件名，为false的时候放的是绝对路径
 bool getDstFiles(string path, string mode, vector<string>& files,bool IsOnlyName)
@@ -101,15 +100,21 @@ void Trim(string &s)
 string GetCurTmStr()
 {
 	time_t t = time(0);
+	tm* CurTm = localtime(&t);
 	char TmBuff[64];
-	strftime(TmBuff, sizeof(TmBuff), "%Y-%m-%d %H:%M:%S", localtime(&t)); //年-月-日 时-分-秒
+	strftime(TmBuff, sizeof(TmBuff), "%Y-%m-%d %H:%M:%S", CurTm); //年-月-日 时-分-秒
 	return TmBuff;
 }
 int CompareNoCase(string str1, string str2)
 {
-	return stricmp(str1.c_str(), str2.c_str());
+	return _stricmp(str1.c_str(), str2.c_str());
 }
-
+string ExtractFileName(string FileName)
+{
+	int pos = FileName.find_last_of('/');
+	string s(FileName.substr(pos + 1));
+	return s;
+}
 
 
 

@@ -16,8 +16,8 @@ using namespace ADO;
 class MainDataModify
 {
 public:
-	MainDataModify();
-	~MainDataModify();
+	MainDataModify() {}
+	~MainDataModify() {}
 	bool ConnectDataBase(string ServerIp, string User, string Pwd, string DataBase);
 	bool SaveDicomInfo(TDcmInfoHeader DcmInfoHeader,string SOPFileName);
 	bool DcmSOPFound(string PatientID, string SOPInstanceUID, string& SOPFileName);

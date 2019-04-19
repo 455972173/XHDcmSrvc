@@ -28,5 +28,7 @@ void Trim(string &s);
 string GetCurTmStr();
 //比较两个字符串大小 当s1<s2时，返回值<0，当s1 = s2时，返回值 = 0，当s1>s2时，返回值>0
 int CompareNoCase(string str1, string str2);
+//提取文件名
+string ExtractFileName(string FileName);
 #endif // !"_PUBFUNC_H_"
 
