@@ -111,6 +111,11 @@ public:
 	{
 		return m_IniConfig.ReadString("ConfigInfo", "DeviceSN", "");
 	}
+	string GetDBFileName()
+	{
+		return m_IniConfig.ReadString("ConfigInfo", "DBFileName", "");
+	}
+
 
 private:
 	ConfigHead m_ConfigHead;

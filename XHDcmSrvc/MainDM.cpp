@@ -30,13 +30,16 @@ bool MainDataModify::DcmSOPFound(string PatientID, string SOPInstanceUID, string
 	memset(CmdBuf, 0, 1024);
 	snprintf(CmdBuf,1024,"select ObjectFile from DcmSOP where PatientID=%s and SOPInstUID=%s ", PatientID.c_str(), SOPInstanceUID.c_str());
 	_RecordsetPtr CurRecordSet = m_Sql.Query(CmdBuf);
-	bool IsSOPFound = false;
+	if (CurRecordSet == NULL)
+	{
+		return false;
+	}
 	if (!CurRecordSet->EndOfFile)//Èç¹ûÄÜ¹»ÕÒµ½
 	{
-		IsSOPFound = true;
+		return true;
 		SOPFileName = CurRecordSet->GetCollect("ObjectFile");
 	}
-	return IsSOPFound;
+	return false;
 }
 void MainDataModify::ExecuteSQL(string SqlCmd)//Ö´ÐÐsqlÓï¾ä
 {
@@ -47,6 +50,10 @@ bool MainDataModify::DcmPatientExist(string PatientID, string& PatientName)//¸ù¾
 {
 	string SqlCmd = "select PatientName from DcmPatient where PatientID=" + PatientID;
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
+	if (CurRecordSet == NULL)
+	{
+		return false;
+	}
 	if (!CurRecordSet->EndOfFile)
 	{
 		PatientName = (char*)(_bstr_t)CurRecordSet->GetCollect("PatientName");
@@ -58,6 +65,10 @@ bool MainDataModify::DcmStudyExist(string PatientID, string StudyInstanceUID)//Å
 {
 	string SqlCmd = "select StudyInstUID from DcmStudy where PatientID=" + PatientID + " and StudyInstUID=" + StudyInstanceUID;
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
+	if (CurRecordSet == NULL)
+	{
+		return false;
+	}
 	if (!CurRecordSet->EndOfFile)
 	{
 		return true;
@@ -68,6 +79,10 @@ bool MainDataModify::DcmSeriesExist(string PatientID, string SeriesInstanceUID)
 {
 	string SqlCmd = "select SeriesInstUID from DcmSeries where SeriesPatID=" + PatientID + " and SeriesInstUID=" + SeriesInstanceUID;
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
+	if (CurRecordSet == NULL)
+	{
+		return false;
+	}
 	if (!CurRecordSet->EndOfFile)
 	{
 		return true;
@@ -78,6 +93,10 @@ bool MainDataModify::DcmSOPExist(string PatientID, string SOPInstanceUID)
 {
 	string SqlCmd = "select SOPInstUID from DcmSOP where PatientID=" + PatientID + " and SOPInstUID=" + SOPInstanceUID;
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
+	if (CurRecordSet == NULL)
+	{
+		return false;
+	}
 	if (!CurRecordSet->EndOfFile)
 	{
 		return true;

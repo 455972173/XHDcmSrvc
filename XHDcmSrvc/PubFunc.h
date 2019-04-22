@@ -30,5 +30,17 @@ string GetCurTmStr();
 int CompareNoCase(string str1, string str2);
 //提取文件名
 string ExtractFileName(string FileName);
+//Ascii转Unicode
+std::wstring AnsiToUNICODE(const std::string& str);
+//Unicode转Ascii
+string UnicodeToANSI(const std::wstring& str);
+// 创建复目录 支持创建多级目录
+void __fastcall RecursiveDirectory(wstring wstrDir);
+//删除目标文件
+void DeleteDstFile(string DstFile);
+//将文件复制到目的路径
+void CopyDstFile(string SrcFile, string DstFile);
+//设置文件属性
+void SetDstFileAttributes(string DstFile, DWORD FileAttributes);
 #endif // !"_PUBFUNC_H_"
 

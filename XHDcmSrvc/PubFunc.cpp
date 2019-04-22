@@ -115,6 +115,113 @@ string ExtractFileName(string FileName)
 	string s(FileName.substr(pos + 1));
 	return s;
 }
+std::wstring AnsiToUNICODE(const std::string& str)
+{
+	wchar_t*  pElementText;
+	int    iTextLen;
+	// 宽字节转多字节
+	iTextLen = MultiByteToWideChar(CP_ACP, 0,
+		str.c_str(),
+		-1,
+		nullptr,
+		0);
 
+	pElementText = new wchar_t[iTextLen + 1];
+	memset((void*)pElementText, 0, sizeof(char) * (iTextLen + 1));
+	::MultiByteToWideChar(CP_ACP,
+		0,
+		str.c_str(),
+		-1,
+		pElementText,
+		iTextLen);
+
+	std::wstring strText;
+	strText = pElementText;
+	delete[] pElementText;
+	return strText;
+}
+string UnicodeToANSI(const std::wstring& str)
+{
+	char*  pElementText;
+	int    iTextLen;
+	// 宽字节转多字节
+	iTextLen = WideCharToMultiByte(CP_ACP, 0,
+		str.c_str(),
+		-1,
+		nullptr,
+		0,
+		nullptr,
+		nullptr);
+
+	pElementText = new char[iTextLen + 1];
+	memset((void*)pElementText, 0, sizeof(char) * (iTextLen + 1));
+	::WideCharToMultiByte(CP_ACP,
+		0,
+		str.c_str(),
+		-1,
+		pElementText,
+		iTextLen,
+		nullptr,
+		nullptr);
+
+	std::string strText;
+	strText = pElementText;
+	delete[] pElementText;
+	return strText;
+}
+void __fastcall RecursiveDirectory(wstring wstrDir) // 创建复目录
+{
+    if (wstrDir.length() <= 3)//是根目录，无需创建目录
+    {
+        return;
+    }
+    if (wstrDir[wstrDir.length() - 1] == '\\')   // 将路径改为目录
+    {
+        wstrDir.erase(wstrDir.end() - 1);
+    }
+    // 修改文件属性
+    WIN32_FIND_DATA wfd;
+    HANDLE hFind = FindFirstFile(wstrDir.c_str(), &wfd); // 查找
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        FindClose(hFind);
+        if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            return;
+    }
+    // 创建当前目录的地目录失败
+    if (CreateDirectory(wstrDir.c_str(), NULL) == false)
+    {// 退到上一级目录
+        wstring wstrNewDir = wstrDir;
+        while (wstrNewDir[wstrNewDir.length()-1] != '\\')     // 撤到当前目录的上一个目录
+        {
+            wstrNewDir.erase(wstrNewDir.length() - 1);
+        }
+        // delete '\\' 
+        wstrNewDir.erase(wstrNewDir.length() - 1); // delete '\\' 
+        // 递归进入
+        RecursiveDirectory(wstrNewDir);  // 递归本函数，再创建目录
+        // 递归退出后创建之前失败的目录
+        CreateDirectory(wstrDir.c_str(), NULL);  // 递归返回，在存在的目录上再建目录
+    }// 多级目录创建成功
+}
+void DeleteDstFile(string DstFile)
+{
+	wstring WStrDstFile = AnsiToUNICODE(DstFile);
+
+	DeleteFile(LPCWSTR(WStrDstFile.c_str()));
+}
+void CopyDstFile(string SrcFile,string DstFile)
+{
+	wstring WStrSrcFile = AnsiToUNICODE(SrcFile);
+	wstring WStrDstFile = AnsiToUNICODE(DstFile);
+
+	CopyFile((LPCWSTR)WStrSrcFile.c_str(), (LPCWSTR)WStrDstFile.c_str(), false);
+}
+void SetDstFileAttributes(string DstFile, DWORD FileAttributes)
+{
+	wstring WStrDstFile = AnsiToUNICODE(DstFile);
+
+	SetFileAttributes((LPCWSTR)WStrDstFile.c_str(), FileAttributes);
+}
 
 

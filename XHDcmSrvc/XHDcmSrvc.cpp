@@ -47,25 +47,25 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 			TDcmObjManager DcmObjMngr(CurDcmFilePath);
 			if (!DcmObjMngr.IsDcmOpenSuccess())//如果Dcm文件打开失败，删除当前文件后，开始解析下一个文件
 			{
-				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(),FILE_ATTRIBUTE_READONLY);
+				SetDstFileAttributes(CurDcmFilePath,FILE_ATTRIBUTE_READONLY);
 				Logger.TraceError("Dcm文件打开失败:%s", CurDcmFilePath.c_str());
-				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
+				DeleteDstFile(CurDcmFilePath);
 				continue;
 			}
 			//获取头信息
 			TDcmInfoHeader* DcmInfoHeader = DcmObjMngr.GetDcmInfoHeader();
 			if (DcmInfoHeader == NULL)
 			{
-				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_READONLY);
+				SetDstFileAttributes(CurDcmFilePath, FILE_ATTRIBUTE_READONLY);
 				Logger.TraceError("Dcm文件头为空:%s", CurDcmFilePath.c_str());
-				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
+				DeleteDstFile(CurDcmFilePath);
 				continue;
 			}
 			if (DcmInfoHeader->SOPInstanceUID == NULL)
 			{
-				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_READONLY);
+				SetDstFileAttributes(CurDcmFilePath, FILE_ATTRIBUTE_READONLY);
 				Logger.TraceError("Dcm文件SOPUid为空:%s", CurDcmFilePath.c_str());
-				DeleteFile(LPCWSTR(CurDcmFilePath.c_str()));
+				DeleteDstFile(CurDcmFilePath);
 				continue;
 			}
 			string SOPInstanceUID = DcmInfoHeader->SOPInstanceUID;
@@ -98,11 +98,11 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 			else
 			{
 				DcmOutputPath = ConfigInfo.GetDcmOutputPath();
-				PatFolderName = DcmOutputPath + "\\" + CanvertToValidFileName(PatientID + ' ' + PatientName);
 			}
+			PatFolderName = DcmOutputPath + "\\" + CanvertToValidFileName(PatientID + ' ' + PatientName);
 			if (!IsFileExists(PatFolderName) && (DcmOutputPath.length()> 0))
 			{
-				CreateDirectory((LPCTSTR)PatFolderName.c_str(),NULL);
+				RecursiveDirectory(AnsiToUNICODE(PatFolderName).c_str());
 			}
 			PatientID = DcmInfoHeader->PatientID;
 			string SOPFileName;
@@ -116,11 +116,11 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 					{
 						if (!ConfigInfo.GetIsOverridePreDCMFile())
 						{
-							DeleteFile((LPCWSTR)CurDcmFilePath.c_str());
+							DeleteDstFile(CurDcmFilePath);
 							Logger.TraceInfo("File Already Exist 1,Delete :%s", CurDcmFileName.c_str());
 							continue;
 						}
-						DeleteFile((LPCWSTR)FullSOPFileName.c_str());
+						DeleteDstFile(FullSOPFileName);
 					}
 				}
 			}
@@ -156,23 +156,24 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 					{
 						if (!ConfigInfo.GetIsOverridePreDCMFile())
 						{
-							DeleteFile((LPCWSTR)CurDcmFilePath.c_str());
+							DeleteDstFile(CurDcmFilePath);
 							Logger.TraceInfo("File Already Exist 2,Delete :%s", CurDcmFileName.c_str());
 							continue;
 						}
-						DeleteFile((LPCWSTR)FullSOPFileName.c_str());
+						DeleteDstFile(FullSOPFileName);
 					}
 				}
 			}
-			CopyFile((LPCWSTR)CurDcmFilePath.c_str(), (LPCWSTR)FullSOPFileName.c_str(), false);
+			CopyDstFile(CurDcmFilePath,FullSOPFileName);
 			if (IsFileExists(FullSOPFileName))
 			{
-				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
+				SetDstFileAttributes(CurDcmFilePath, FILE_ATTRIBUTE_HIDDEN);
 				Logger.TraceInfo("FullSOPFileName Exist :%s", FullSOPFileName.c_str());
+				DeleteDstFile(CurDcmFilePath);
 			}
 			else
 			{
-				SetFileAttributes((LPCWSTR)CurDcmFilePath.c_str(), FILE_ATTRIBUTE_READONLY);
+				SetDstFileAttributes(CurDcmFilePath, FILE_ATTRIBUTE_READONLY);
 				Logger.TraceInfo("FullSOPFileName File Copy Error :%s", FullSOPFileName.c_str());
 			}
 		}
@@ -186,16 +187,7 @@ bool StartInit(string DcmFolderPath)
 	Logger.Init(LogLevel_Info, DcmFolderPath + "\\log\\");
 	Logger.TraceInfo("-------------XHDcmSrvc程序启动-------------");
 	Logger.TraceInfo("当前注册表中的相关配置文件存放路径为 :%s", DcmFolderPath.c_str());
-	//连接数据库
-	if (!MainDatMod.ConnectDataBase("127.0.0.1", "sa", "123456", "PracticeTest"))
-	{
-		Logger.TraceError("数据库服务器连接失败，程序退出");
-		return false;
-	}
-	else
-	{
-		Logger.TraceInfo("数据库服务器连接成功");
-	}
+
 	//初始化.set文件存放路径，读取.set配置文件
 	string ConfigFilePath = DcmFolderPath + "\\XHDcmGate.set";
 	if (!ConfigInfo.ReadConfigFile(ConfigFilePath))
@@ -203,12 +195,24 @@ bool StartInit(string DcmFolderPath)
 		Logger.TraceError("%s打开失败", ConfigFilePath.c_str());
 		return false;
 	}
+
 	//初始化.opt文件存放路径，读取.opt配置文件
 	string OptFilePath = DcmFolderPath + "\\" + ConfigInfo.GetEquipSeriesNo() + ".opt";
 	if (!OptInfo.ReadConfigFile(OptFilePath))
 	{
 		Logger.TraceError("%s打开失败", OptFilePath.c_str());
 		return false;
+	}
+
+	//连接数据库
+	if (!MainDatMod.ConnectDataBase("127.0.0.1", "sa", "123456", ConfigInfo.GetDBFileName().c_str()))
+	{
+		Logger.TraceError("数据库服务器连接失败，程序退出");
+		return false;
+	}
+	else
+	{
+		Logger.TraceInfo("数据库服务器连接成功");
 	}
 
 	//启动DcmServer监听接收文件服务
