@@ -1,48 +1,4 @@
-﻿  stdafx.cpp
-  XHDcmSrvc.cpp
+﻿  MainDM.cpp
 e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(90): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\xhdcmsrvc.cpp(145): warning C4101: “e”: 未引用的局部变量
-  SetFileDef.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-  PubFunc.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\pubfunc.cpp(19): warning C4244: “=”: 从“intptr_t”转换到“long”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\pubfunc.cpp(114): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-  OptFileDef.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-  MainDM.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(149): warning C4473: “snprintf”: 没有为格式字符串传递足够的参数
-  e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(149): note: 占位符和其参数预计 11 可变参数，但提供的却是 10 参数
-  e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(149): note: 缺失的可变参数 11 为格式字符串“%s”所需
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(168): warning C4473: “snprintf”: 没有为格式字符串传递足够的参数
-  e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(168): note: 占位符和其参数预计 12 可变参数，但提供的却是 11 参数
-  e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(168): note: 缺失的可变参数 12 为格式字符串“%s”所需
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(187): warning C4473: “snprintf”: 没有为格式字符串传递足够的参数
-  e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(187): note: 占位符和其参数预计 8 可变参数，但提供的却是 7 参数
-  e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\maindm.cpp(187): note: 缺失的可变参数 8 为格式字符串“%s”所需
-  Logger.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(1544): warning C4091: “typedef ”: 没有声明变量时忽略“”的左侧
-c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(3190): warning C4091: “typedef ”: 没有声明变量时忽略“”的左侧
-  Ini.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(43): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(59): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(60): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(68): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(74): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(85): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(89): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\ini.cpp(187): warning C4244: “return”: 从“double”转换到“float”，可能丢失数据
-  GetRegValue.cpp
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\logger.h(24): warning C4091: “typedef ”: 没有声明变量时忽略“LOGGER::EnumLogLevel”的左侧
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\getregvalue.cpp(12): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\getregvalue.cpp(15): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\getregvalue.cpp(28): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-e:\code\gitpath\xhdcmsrvc\xhdcmsrvc\getregvalue.cpp(31): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-  DCMObj.cpp
-  ADOSQL.cpp
-  正在生成代码...
   XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.exe
   XHDcmSrvc.vcxproj -> E:\CODE\GitPath\XHDcmSrvc\x64\Debug\XHDcmSrvc.pdb (Full PDB)

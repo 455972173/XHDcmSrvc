@@ -28,7 +28,7 @@ bool MainDataModify::DcmSOPFound(string PatientID, string SOPInstanceUID, string
 {
 	char CmdBuf[1024];
 	memset(CmdBuf, 0, 1024);
-	snprintf(CmdBuf,1024,"select ObjectFile from DcmSOP where PatientID=%s and SOPInstUID=%s ", PatientID.c_str(), SOPInstanceUID.c_str());
+	snprintf(CmdBuf,1024,"select ObjectFile from DcmSOP where PatientID=\'%s\' and SOPInstUID=\'%s\' ", PatientID.c_str(), SOPInstanceUID.c_str());
 	_RecordsetPtr CurRecordSet = m_Sql.Query(CmdBuf);
 	if (CurRecordSet == NULL)
 	{
@@ -48,7 +48,7 @@ void MainDataModify::ExecuteSQL(string SqlCmd)//Ö´ÐÐsqlÓï¾ä
 
 bool MainDataModify::DcmPatientExist(string PatientID, string& PatientName)//¸ù¾Ý²¡ÈËID²é¿´ÊÇ·ñ´æÔÚ£¬È¡³ö²¡ÈËÐÕÃû
 {
-	string SqlCmd = "select PatientName from DcmPatient where PatientID=" + PatientID;
+	string SqlCmd = "select PatientName from DcmPatient where PatientID=\'" + PatientID + "\'";
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
 	if (CurRecordSet == NULL)
 	{
@@ -63,7 +63,7 @@ bool MainDataModify::DcmPatientExist(string PatientID, string& PatientName)//¸ù¾
 }
 bool MainDataModify::DcmStudyExist(string PatientID, string StudyInstanceUID)//ÅÐ¶Ï¶ÔÓ¦µÄÓÃ»§ÑÐ¾¿IDÊÇ·ñ´æÔÚ
 {
-	string SqlCmd = "select StudyInstUID from DcmStudy where PatientID=" + PatientID + " and StudyInstUID=" + StudyInstanceUID;
+	string SqlCmd = "select StudyInstUID from DcmStudy where PatientID=\'" + PatientID + "\' and StudyInstUID=\'" + StudyInstanceUID + "\'";
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
 	if (CurRecordSet == NULL)
 	{
@@ -77,7 +77,7 @@ bool MainDataModify::DcmStudyExist(string PatientID, string StudyInstanceUID)//Å
 }
 bool MainDataModify::DcmSeriesExist(string PatientID, string SeriesInstanceUID)
 {
-	string SqlCmd = "select SeriesInstUID from DcmSeries where SeriesPatID=" + PatientID + " and SeriesInstUID=" + SeriesInstanceUID;
+	string SqlCmd = "select SeriesInstUID from DcmSeries where SeriesPatID=\'" + PatientID + "\' and SeriesInstUID=\'" + SeriesInstanceUID + "\'";
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
 	if (CurRecordSet == NULL)
 	{
@@ -91,7 +91,7 @@ bool MainDataModify::DcmSeriesExist(string PatientID, string SeriesInstanceUID)
 }
 bool MainDataModify::DcmSOPExist(string PatientID, string SOPInstanceUID)
 {
-	string SqlCmd = "select SOPInstUID from DcmSOP where PatientID=" + PatientID + " and SOPInstUID=" + SOPInstanceUID;
+	string SqlCmd = "select SOPInstUID from DcmSOP where PatientID=\'" + PatientID + "\' and SOPInstUID=\'" + SOPInstanceUID + "\'";
 	_RecordsetPtr CurRecordSet = m_Sql.Query(SqlCmd);
 	if (CurRecordSet == NULL)
 	{
@@ -147,7 +147,7 @@ bool MainDataModify::SaveDcmStudy(TDcmInfoHeader DcmInfoHeader)
 	else
 	{
 		snprintf(SqlCmdBuff, 2048, "update DcmStudy set StudyDate=\'%s\',StudyTime=\'%s\',StudyID=\'%s\',StudyDescript=\'%s\',AccessionNo=\'%s\',ReferPhysician = \'%s\',StationName=\'%s\',InstituteName=\'%s\',PatientID=\'%s\',AccessTime=\'%s\',where StudyInstUID = \'%s\'",
-			DcmInfoHeader.StudyDate, DcmInfoHeader.StudyTime, DcmInfoHeader.StudyID, DcmInfoHeader.StudyDescript, DcmInfoHeader.AccessionNo, DcmInfoHeader.ReferPhysician, DcmInfoHeader.StationName, DcmInfoHeader.InstituteName, DcmInfoHeader.PatientID, AccessTimeStr.c_str());
+			DcmInfoHeader.StudyDate, DcmInfoHeader.StudyTime, DcmInfoHeader.StudyID, DcmInfoHeader.StudyDescript, DcmInfoHeader.AccessionNo, DcmInfoHeader.ReferPhysician, DcmInfoHeader.StationName, DcmInfoHeader.InstituteName, DcmInfoHeader.PatientID, AccessTimeStr.c_str(),DcmInfoHeader.StudyInstanceUID);
 	}
 	ExecuteSQL(SqlCmdBuff);
 	return true;
@@ -160,13 +160,13 @@ bool MainDataModify::SaveDcmSeries(TDcmInfoHeader DcmInfoHeader)
 	string AccessTimeStr = GetCurTmStr();
 	if (!DcmSeriesExist(DcmInfoHeader.PatientID, DcmInfoHeader.SeriesInstanceUID))
 	{
-		snprintf(SqlCmdBuff, 2048, "insert into DcmStudy(SeriesInstUID, SeriesDate, SeriesTime, SeriesNo, SeriesDescript, Modality, Manufacturer, ModelName, BodyPartExam, SeriesPatID,StudyInstUID, AccessTime) values(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')",
+		snprintf(SqlCmdBuff, 2048, "insert into DcmSeries(SeriesInstUID, SeriesDate, SeriesTime, SeriesNo, SeriesDescript, Modality, Manufacturer, ModelName, BodyPartExam, SeriesPatID,StudyInstUID, AccessTime) values(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')",
 			DcmInfoHeader.SeriesInstanceUID, DcmInfoHeader.SeriesDate, DcmInfoHeader.SeriesTime, DcmInfoHeader.SeriesNo, DcmInfoHeader.SeriesDescript, DcmInfoHeader.Modality, DcmInfoHeader.Manufacturer, DcmInfoHeader.ModelName, DcmInfoHeader.BodyPartExam, DcmInfoHeader.PatientID, DcmInfoHeader.StudyInstanceUID, AccessTimeStr.c_str());
 	}
 	else
 	{
 		snprintf(SqlCmdBuff, 2048, "update DcmSeries set SeriesDate=\'%s\',SeriesTime=\'%s\',SeriesNo=\'%s\',SeriesDescript=\'%s\',Modality=\'%s\',Manufacturer = \'%s\',ModelName=\'%s\',BodyPartExam=\'%s\',SeriesPatID=\'%s\',StudyInstUID=\'%s\',AccessTime=\'%s\',where StudyInstUID = \'%s\'",
-			DcmInfoHeader.SeriesDate, DcmInfoHeader.SeriesTime, DcmInfoHeader.SeriesNo, DcmInfoHeader.SeriesDescript, DcmInfoHeader.Modality, DcmInfoHeader.Manufacturer, DcmInfoHeader.ModelName, DcmInfoHeader.BodyPartExam, DcmInfoHeader.PatientID, DcmInfoHeader.StudyInstanceUID, AccessTimeStr.c_str());
+			DcmInfoHeader.SeriesDate, DcmInfoHeader.SeriesTime, DcmInfoHeader.SeriesNo, DcmInfoHeader.SeriesDescript, DcmInfoHeader.Modality, DcmInfoHeader.Manufacturer, DcmInfoHeader.ModelName, DcmInfoHeader.BodyPartExam, DcmInfoHeader.PatientID, DcmInfoHeader.StudyInstanceUID, AccessTimeStr.c_str(), DcmInfoHeader.StudyInstanceUID);
 	}
 	ExecuteSQL(SqlCmdBuff);
 	return true;
@@ -185,8 +185,9 @@ bool MainDataModify::SaveDcmSOP(TDcmInfoHeader DcmInfoHeader, string SOPFileName
 	else
 	{
 		snprintf(SqlCmdBuff, 2048, "update DcmSOP set SOPClassUID=\'%s\',InstanceNo=\'%s\',PatientID=\'%s\',StudyInstUID=\'%s\',SeriesInstUID=\'%s\',ObjectFile = \'%s\',AccessTime=\'%s\',where SOPInstUID = \'%s\'",
-			DcmInfoHeader.SOPInstanceUID, DcmInfoHeader.SOPClassUID, DcmInfoHeader.InstanceNo, DcmInfoHeader.PatientID, DcmInfoHeader.StudyInstanceUID, DcmInfoHeader.SeriesInstanceUID, AccessTimeStr.c_str());
+			 DcmInfoHeader.SOPClassUID, DcmInfoHeader.InstanceNo, DcmInfoHeader.PatientID, DcmInfoHeader.StudyInstanceUID, DcmInfoHeader.SeriesInstanceUID, SOPFileName.c_str(), AccessTimeStr.c_str(), DcmInfoHeader.SOPInstanceUID);
 	}
+	ExecuteSQL(SqlCmdBuff);
 	return true;
 }
 

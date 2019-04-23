@@ -114,13 +114,13 @@ DWORD WINAPI AnalyseDcmFileThread(LPVOID lpParameter)
 					FullSOPFileName = PatFolderName + "\\" + SOPFileName;
 					if (IsFileExists(FullSOPFileName))
 					{
-						if (!ConfigInfo.GetIsOverridePreDCMFile())
+						if (!ConfigInfo.GetIsOverridePreDCMFile())//如果不需要覆盖则删除源文件
 						{
 							DeleteDstFile(CurDcmFilePath);
 							Logger.TraceInfo("File Already Exist 1,Delete :%s", CurDcmFileName.c_str());
 							continue;
 						}
-						DeleteDstFile(FullSOPFileName);
+						DeleteDstFile(FullSOPFileName);//需要覆盖则删除之前的文件
 					}
 				}
 			}
